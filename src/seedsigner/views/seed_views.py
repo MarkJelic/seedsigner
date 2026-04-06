@@ -230,7 +230,7 @@ class SeedMnemonicEntryView(View):
                 return Destination(BackStackView)
             else:
                 self.controller.storage.discard_pending_mnemonic()
-                return Destination(MainMenuView)
+                return Destination(BackStackView)
         
         # ret will be our new mnemonic word
         self.controller.storage.update_pending_mnemonic(ret, self.cur_word_index)
@@ -332,15 +332,15 @@ class SeedFinalizeView(View):
             button_data=button_data,
         )
 
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
         if button_data[selected_menu_num] == self.FINALIZE:
             seed_num = self.controller.storage.finalize_pending_seed()
             return Destination(SeedOptionsView, view_args={"seed_num": seed_num}, clear_history=True)
 
         elif button_data[selected_menu_num] == self.PASSPHRASE:
             return Destination(SeedAddPassphraseView)
-
-        elif selected_menu_num == RET_CODE__BACK_BUTTON:
-            return Destination(BackStackView)
 
 
 
