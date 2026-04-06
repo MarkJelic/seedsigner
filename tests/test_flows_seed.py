@@ -495,6 +495,110 @@ class TestSeedFlows(FlowTest):
 
 
 
+class TestSeedEntryBackFlows(FlowTest):
+    """
+    Tests for every BACK exit scenario from SeedMnemonicEntryView and related views.
+    
+    A naive BackStackView swap can leave resume_main_flow dangling, causing
+    auto-redirects on stale flow state. These tests verify that BACK navigation
+    returns to the correct parent view AND that no flow state leaks.
+    """
+
+    def test_back_from_seed_entry_12_word(self):
+        """
+        Seeds Menu → Load a Seed → Enter 12-word → BACK on first word →
+        should return to LoadSeedView, NOT MainMenuView.
+        """
+        self.run_sequence([
+            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
+            FlowStep(seed_views.SeedsMenuView, is_redirect=True),  # No seeds loaded; auto-redirects to LoadSeedView
+            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_12WORD),
+            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),
+            FlowStep(seed_views.LoadSeedView),  # Should land here, NOT MainMenuView
+        ])
+
+
+    def test_back_from_seed_entry_24_word(self):
+        """
+        Seeds Menu → Load a Seed → Enter 24-word → BACK on first word →
+        should return to LoadSeedView, NOT MainMenuView.
+        """
+        self.run_sequence([
+            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
+            FlowStep(seed_views.SeedsMenuView, is_redirect=True),  # No seeds loaded; auto-redirects to LoadSeedView
+            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_24WORD),
+            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),
+            FlowStep(seed_views.LoadSeedView),  # Should land here, NOT MainMenuView
+        ])
+
+
+    def test_back_from_seed_entry_mid_word(self):
+        """
+        Pressing BACK from a middle word (eg. word #2) should return to the
+        previous SeedMnemonicEntryView (eg. word #1) via the back stack.
+        """
+        self.run_sequence([
+            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
+            FlowStep(seed_views.SeedsMenuView, is_redirect=True),
+            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_12WORD),
+            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value="abandon"),  # word #1
+            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),  # BACK from word #2
+            FlowStep(seed_views.SeedMnemonicEntryView),  # Returns to word #1
+        ])
+
+
+    def test_back_from_seed_entry_via_seed_select(self):
+        """
+        When entering a seed via SeedSelectSeedView (e.g. during sign message flow),
+        pressing BACK on the first word should return to SeedSelectSeedView, NOT
+        MainMenuView. Crucially, resume_main_flow must remain valid since the user
+        is still within that flow.
+        """
+        from seedsigner.controller import Controller
+        from seedsigner.models.settings import SettingsConstants
+
+        self.settings.set_value(SettingsConstants.SETTING__MESSAGE_SIGNING, SettingsConstants.OPTION__ENABLED)
+
+        def load_signmessage_into_decoder(view):
+            view.decoder.add_data("signmessage m/84h/0h/0h/0/0 ascii:test message")
+
+        self.run_sequence([
+            FlowStep(MainMenuView, button_data_selection=MainMenuView.SCAN),
+            FlowStep(scan_views.ScanView, before_run=load_signmessage_into_decoder),
+            FlowStep(seed_views.SeedSignMessageStartView, is_redirect=True),
+            FlowStep(seed_views.SeedSelectSeedView, button_data_selection=seed_views.SeedSelectSeedView.TYPE_12WORD),
+            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),  # BACK on first word
+            FlowStep(seed_views.SeedSelectSeedView),  # Should return here, in the sign message flow
+        ])
+
+        # Verify resume_main_flow is still set — user is still in the sign message flow
+        assert self.controller.resume_main_flow == Controller.FLOW__SIGN_MESSAGE
+
+
+    def test_back_from_seed_finalize(self):
+        """
+        Pressing BACK from SeedFinalizeView should return to the last word
+        entry view via the back stack.
+        """
+        mnemonic = "tone flat shed cool census soul paddle boy flight fantasy stem social".split()
+        sequence = [
+            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
+            FlowStep(seed_views.SeedsMenuView, is_redirect=True),
+            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_12WORD),
+        ]
+
+        for word in mnemonic:
+            sequence.append(FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=word))
+
+        sequence += [
+            FlowStep(seed_views.SeedFinalizeView, screen_return_value=RET_CODE__BACK_BUTTON),
+            FlowStep(seed_views.SeedMnemonicEntryView),  # Returns to last word entry
+        ]
+
+        self.run_sequence(sequence)
+
+
+
 class TestMessageSigningFlows(FlowTest):
     MAINNET_DERIVATION_PATH = "m/84h/0h/0h/0/0"
     TESTNET_DERIVATION_PATH = "m/84h/1h/0h/0/0"
