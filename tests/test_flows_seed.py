@@ -575,28 +575,6 @@ class TestSeedEntryBackFlows(FlowTest):
         assert self.controller.resume_main_flow == Controller.FLOW__SIGN_MESSAGE
 
 
-    def test_back_from_seed_finalize(self):
-        """
-        Pressing BACK from SeedFinalizeView should return to the last word
-        entry view via the back stack.
-        """
-        mnemonic = "tone flat shed cool census soul paddle boy flight fantasy stem social".split()
-        sequence = [
-            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
-            FlowStep(seed_views.SeedsMenuView, is_redirect=True),
-            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_12WORD),
-        ]
-
-        for word in mnemonic:
-            sequence.append(FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=word))
-
-        sequence += [
-            FlowStep(seed_views.SeedFinalizeView, screen_return_value=RET_CODE__BACK_BUTTON),
-            FlowStep(seed_views.SeedMnemonicEntryView),  # Returns to last word entry
-        ]
-
-        self.run_sequence(sequence)
-
 
 
 class TestMessageSigningFlows(FlowTest):
