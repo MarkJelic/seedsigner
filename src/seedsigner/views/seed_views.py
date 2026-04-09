@@ -226,11 +226,10 @@ class SeedMnemonicEntryView(View):
         )
 
         if ret == RET_CODE__BACK_BUTTON:
-            if self.cur_word_index > 0:
-                return Destination(BackStackView)
-            else:
+            # Only need to discard when exiting from the very first word
+            if self.cur_word_index == 0:
                 self.controller.storage.discard_pending_mnemonic()
-                return Destination(BackStackView)
+            return Destination(BackStackView)
         
         # ret will be our new mnemonic word
         self.controller.storage.update_pending_mnemonic(ret, self.cur_word_index)
@@ -331,9 +330,6 @@ class SeedFinalizeView(View):
             fingerprint=self.fingerprint,
             button_data=button_data,
         )
-
-        if selected_menu_num == RET_CODE__BACK_BUTTON:
-            return Destination(BackStackView)
 
         if button_data[selected_menu_num] == self.FINALIZE:
             seed_num = self.controller.storage.finalize_pending_seed()
