@@ -226,7 +226,10 @@ class SeedMnemonicEntryView(View):
         )
 
         if ret == RET_CODE__BACK_BUTTON:
-            # Only need to discard when exiting from the very first word
+            # RET_CODE__BACK_BUTTON can happen in two ways here:
+            # 1. Backing out of the very first word completely aborts the mnemonic entry.
+            # 2. Backing out of a subsequent word just returns to the previous word.
+            # In both cases we return to BackStackView, but for case #1 we must also discard.
             if self.cur_word_index == 0:
                 self.controller.storage.discard_pending_mnemonic()
             return Destination(BackStackView)
