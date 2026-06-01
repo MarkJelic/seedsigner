@@ -504,32 +504,20 @@ class TestSeedEntryBackFlows(FlowTest):
     returns to the correct parent view AND that no flow state leaks.
     """
 
-    def test_back_from_seed_entry_12_word(self):
+    def test_back_from_seed_entry_first_word(self):
         """
-        Seeds Menu → Load a Seed → Enter 12-word → BACK on first word →
+        Seeds Menu → Load a Seed → Enter 12/24-word → BACK on first word →
         should return to LoadSeedView, NOT MainMenuView.
         """
-        self.run_sequence([
-            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
-            FlowStep(seed_views.SeedsMenuView, is_redirect=True),  # No seeds loaded; auto-redirects to LoadSeedView
-            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_12WORD),
-            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),
-            FlowStep(seed_views.LoadSeedView),  # Should land here, NOT MainMenuView
-        ])
-
-
-    def test_back_from_seed_entry_24_word(self):
-        """
-        Seeds Menu → Load a Seed → Enter 24-word → BACK on first word →
-        should return to LoadSeedView, NOT MainMenuView.
-        """
-        self.run_sequence([
-            FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
-            FlowStep(seed_views.SeedsMenuView, is_redirect=True),  # No seeds loaded; auto-redirects to LoadSeedView
-            FlowStep(seed_views.LoadSeedView, button_data_selection=seed_views.LoadSeedView.TYPE_24WORD),
-            FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),
-            FlowStep(seed_views.LoadSeedView),  # Should land here, NOT MainMenuView
-        ])
+        for seed_type in [seed_views.LoadSeedView.TYPE_12WORD, seed_views.LoadSeedView.TYPE_24WORD]:
+            self.run_sequence([
+                FlowStep(MainMenuView, button_data_selection=MainMenuView.SEEDS),
+                FlowStep(seed_views.SeedsMenuView, is_redirect=True),  # No seeds loaded; auto-redirects to LoadSeedView
+                FlowStep(seed_views.LoadSeedView, button_data_selection=seed_type),
+                FlowStep(seed_views.SeedMnemonicEntryView, screen_return_value=RET_CODE__BACK_BUTTON),
+                FlowStep(seed_views.LoadSeedView),  # Should land here, NOT MainMenuView
+            ])
+            BaseTest.reset_controller()
 
 
     def test_back_from_seed_entry_mid_word(self):
