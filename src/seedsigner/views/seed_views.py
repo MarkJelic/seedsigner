@@ -227,8 +227,8 @@ class SeedMnemonicEntryView(View):
 
         if ret == RET_CODE__BACK_BUTTON:
             # This handles two possible scenarios:
-            # 1. Backing out of the first word cancels the mnemonic entry process; 
-                 return to whichever `View` routed us here initially.
+            # 1. Backing out of the first word cancels the mnemonic entry process;
+            #    return to whichever `View` routed us here initially.
             # 2. Backing out of the current word returns to the previous word.
             if self.cur_word_index == 0:
                 self.controller.storage.discard_pending_mnemonic()
