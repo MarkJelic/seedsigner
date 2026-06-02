@@ -506,8 +506,8 @@ class TestSeedEntryBackFlows(FlowTest):
 
     def test_back_from_seed_entry_first_word(self):
         """
-        Seeds Menu → Load a Seed → Enter 12/24-word → BACK on first word →
-        should return to LoadSeedView, NOT MainMenuView.
+        Pressing BACK on the first word of mnemonic entry should return to
+        the View that initiated the mnemonic entry process.
         """
         for seed_type in [seed_views.LoadSeedView.TYPE_12WORD, seed_views.LoadSeedView.TYPE_24WORD]:
             self.run_sequence([
@@ -534,13 +534,16 @@ class TestSeedEntryBackFlows(FlowTest):
             FlowStep(seed_views.SeedMnemonicEntryView),  # Returns to word #1
         ])
 
+        # Verify we're back on word #1: word at index 0 should still be set
+        # from the previous entry, while word at index 1 should be unset.
+        assert self.controller.storage.get_pending_mnemonic_word(0) == "abandon"
+        assert self.controller.storage.get_pending_mnemonic_word(1) is None
+
 
     def test_back_from_seed_entry_via_seed_select(self):
         """
-        When entering a seed via SeedSelectSeedView (e.g. during sign message flow),
-        pressing BACK on the first word should return to SeedSelectSeedView, NOT
-        MainMenuView. Crucially, resume_main_flow must remain valid since the user
-        is still within that flow.
+        Backing out of mnemonic entry during an active flow must preserve
+        `resume_main_flow` so the user remains within that flow.
         """
         from seedsigner.controller import Controller
         from seedsigner.models.settings import SettingsConstants
