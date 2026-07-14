@@ -9,11 +9,11 @@ the impossible to accurately pick a letter and *actiually* select it with the jo
 
 So, what does a Bitcoiner do when they see a problem with Bitcoin? Do they just sit thre and whinge about it?
 Do they just flip the table and storm off in a huff?
-No, we raise a BIP and usually do the work involved with making the improvement happen. This is my SSIP.
+No, we raise a BIP and usually do the work involved with making the improvement happen. This is my SIP-154.
 
-## SeesSigner Improvement Proposal 154
+## SeedSigner Improvement Proposal 154
 
-I am no electrical engineer, but what goes ito making a "Display Hat" that plugs into a Raspberry Pi Zero is not rocket science.
+I am no electrical engineer, but what goes into making a "Display Hat" that plugs into a Raspberry Pi Zero is not rocket science.
 The design for the original 1.3" display is thankfully open source, so it was just a matter of sourcing better parts
 that still worked, without any modification to the SeedSigner software.  It took a while, but after many LCD purchases
 and a whole lot of testing and swearing, a solution was found.
@@ -29,4 +29,10 @@ and a whole lot of testing and swearing, a solution was found.
 | Joystick Cap | Better control over your eventual letter selection. |
 | Set Selection Switch | Still have problems pressing the joystick down accurately? Then don't! Slide the Selection Switch to Disable the Jostick Select, and Enable the extra Select Button on the right. For the silkiest, silent Select ever selected on a SeedSigner! (Try saying that 5 times quickly!!) |
 
+## How to Obtain One
 
+Part of the attraction of using a SeedSigner is becuase you can buy the individual components 
+(the Raspberry Pi Zero, the Camera, and the Display Hat) from various suppliers (on eBay, AliExpress, Amazon, etc)
+and no single entity knows you are putting together a Bitcoin device.  Well the SeedSigner 1.54" takes that even one step further.
+Once testing is complete and everything confirmed to be working, the design files will be released and with these in hand,
+you will be able to get the PCB 
