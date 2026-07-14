@@ -33,6 +33,19 @@ and a whole lot of testing and swearing, a solution was found.
 
 Part of the attraction of using a SeedSigner is becuase you can buy the individual components 
 (the Raspberry Pi Zero, the Camera, and the Display Hat) from various suppliers (on eBay, AliExpress, Amazon, etc)
-and no single entity knows you are putting together a Bitcoin device.  Well the SeedSigner 1.54" takes that even one step further.
-Once testing is complete and everything confirmed to be working, the design files will be released and with these in hand,
-you will be able to get the PCB 
+and no single entity knows you are putting together a Bitcoin device.  With the SeedSigner 1.54" you can take that even a few steps further.
+Once testing is complete and everything confirmed to be working, the design files will be released and then there will be several options available:
+ - Order a pre-assembled SeedSigner 1.54" from authorised worldwide resellers
+ - Order a pre-assembled 1.54" Display Hat so you can upgrade your existing SeedSigner
+ - Order just the PCB from PCBway or JLCPCB and source the components yourself. (Sharpen your soldering skillz!)
+
+A full Bill of Materials will be compiled and released so you can build your own!
+
+## New 3D Printable Case
+
+Seeing as the screen is larger, the buttons are bigger, and there is a new Selection Selector Slide Switch,
+the 3D printable case will be tweaked a little to accomodate the changes, and will also be released.
+
+## Contact the Designer
+Mark of Bitcoin can be found on Twitter / X : @MarkofBitcoin
+Feel free to reach out for distribution rights in your region.
