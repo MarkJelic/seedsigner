@@ -47,5 +47,5 @@ Seeing as the screen is larger, the buttons are bigger, and there is a new Selec
 the 3D printable case will be tweaked a little to accomodate the changes, and will also be released.
 
 ## Contact the Designer
-Mark of Bitcoin can be found on Twitter / X : @MarkofBitcoin
+Mark of Bitcoin can be found on Twitter / X : @MarkofBitcoin<br>
 Feel free to reach out for distribution rights in your region.
